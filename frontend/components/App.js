@@ -1,5 +1,5 @@
-import React from 'react'
-import axios from 'axios'
+import React from 'react';
+import axios from 'axios';
 
 const URL = 'http://localhost:9000/api/todos'
 
@@ -12,23 +12,26 @@ export default class App extends React.Component {
   
   onTodoInputChange = evt => {
     const { value } = evt.target
-    this.setState({ ...this.state, todoInput: value })
+    this.setState({ ...this.state, todoInput: value });
   }
+
+  resetInput = () => this.setState({ ...this.state, todoInput: "" });
+
+  setResError = err =>  this.setState({ ...this.state, error: err.response.data.message });
  
   newPost = () => {
     axios.post(URL, {name: this.state.todoInput})
     .then(res => {
-      this.fetchAll()
-      this.setState({ ...this.state, todoInput: "" })
+      this.setState({ ...this.state, todos: this.state.todos.concat(res.data.data)  });
+      this.resetInput();
+      
     })
-    .catch(err => {
-      this.setState({ ...this.state, error: err.response.data.message })
-    })
+    .catch(this.setResError);
   }
 
   onTodoInputSubmit = evt => {
-    evt.preventDefault()
-    this.newPost()
+    evt.preventDefault();
+    this.newPost();
   }
 
   fetchAll = () => {
@@ -37,10 +40,21 @@ export default class App extends React.Component {
         //console.log(res)
         this.setState({ ...this.state, todos: res.data.data})
       })
-      .catch( err => {
-        this.setState({ ...this.state, error: err.response.data.message })
-      })
+      .catch(this.setResError)
   }
+
+  toggleCompleted = id => evt => {
+    axios.patch(`${URL}/${id}`)
+    .then(res => {
+     this.setState({ ...this.state, todos: this.state.todos.map(todo => {
+        if (todo.id !== id) return todo
+        return res.data.data
+      }) 
+     })
+    })
+    .catch(this.setResError)
+  }
+
 
   componentDidMount() {
    this.fetchAll()
@@ -54,7 +68,7 @@ export default class App extends React.Component {
           <h2>Todo List</h2>
           {
             this.state.todos.map(todo => {
-              return <div key={todo.id}>{todo.name}</div>
+              return <div onClick={this.toggleCompleted(todo.id)} key={todo.id}>{todo.name} {todo.completed ? "  ✔️" : "  ❌"} </div>
             })
           }
         </div>
