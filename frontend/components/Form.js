@@ -13,7 +13,7 @@ export default class Form extends React.Component {
           </input>
           <input type="submit"></input>
         </form>
-        <button onClick={this.props.handleClear}>Clear Completed Todo</button>
+        <button onClick={this.props.handleClear}>Clear Completed Todo's</button>
       </div>
     )
   }
