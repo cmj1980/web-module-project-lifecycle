@@ -1,4 +1,5 @@
 import React from 'react'
+import Todo from './Todo'
 
 export default class TodoList extends React.Component {
   render() {
@@ -7,7 +8,14 @@ export default class TodoList extends React.Component {
       <h2>Todo List</h2>
       {
         this.props.todos.map(todo => {
-          return <div onClick={this.props.toggleCompleted(todo.id)} key={todo.id}>{todo.name} {todo.completed ? "  ✔️" : "  ❌"} </div>
+          return (
+            <Todo 
+            key={todo.id}
+            toggleCompleted={this.props.toggleCompleted}
+            todo={todo}
+            />
+
+          )
         })
       }
     </div>
