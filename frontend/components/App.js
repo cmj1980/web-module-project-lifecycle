@@ -8,6 +8,7 @@ export default class App extends React.Component {
     todos: [],
     error: "",
     todoInput: "",
+    
   }
   
   onTodoInputChange = evt => {
@@ -55,6 +56,15 @@ export default class App extends React.Component {
     .catch(this.setResError)
   }
 
+  handleClear = () => {
+    this.setState({ 
+      ...this.state,
+      todos: this.state.todos.filter(todo => {
+        return (todo.completed === false)
+      })
+     });
+
+  }
 
   componentDidMount() {
    this.fetchAll()
@@ -75,9 +85,9 @@ export default class App extends React.Component {
         <form id="todoForm" onSubmit={this.onTodoInputSubmit}>
           <input value={this.state.todoInput} onChange={this.onTodoInputChange} type="text" placeholder="Add Todo Here"></input>
           <input type="submit"></input>
-          <button>Clear Completed Todo</button>
         </form>
+        <button onClick={this.handleClear}>Clear Completed Todo</button>
       </div>
     )
-  }
+  } 
 }
